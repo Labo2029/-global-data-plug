@@ -121,6 +121,15 @@ message.style.display="block";
 message.textContent="Demo request received: "+network+" data for "+phone+". Live purchases are not yet enabled.";
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://rtzsmlfbzaohecoaxtav.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_aALYcqtkBOxligf84gZTrQ_1WZcxlkP";
 
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+</script>
 </body>
 </html>
