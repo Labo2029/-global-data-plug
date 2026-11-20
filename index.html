@@ -102,25 +102,45 @@ footer{text-align:center;padding:30px 10px;color:#7b8798;font-size:12px}
 © 2026 GLOBAL DATA PLUG. All rights reserved.
 </footer>
 
+
 <script>
-document.getElementById("dataForm").addEventListener("submit",function(e){
-e.preventDefault();
+document.getElementById("dataForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-const phone=document.getElementById("phone").value;
-const network=document.getElementById("network").value;
-const plan=document.getElementById("plan").value;
-const message=document.getElementById("message");
+  const phone = document.getElementById("phone").value.trim();
+  const network = document.getElementById("network").value;
+  const plan = document.getElementById("plan");
+  const message = document.getElementById("message");
 
-if(!/^[0-9]{11}$/.test(phone)){
-message.style.display="block";
-message.textContent="Please enter a valid 11-digit Nigerian phone number.";
-return;
-}
+  if (!/^[0-9]{11}$/.test(phone)) {
+    message.style.display = "block";
+    message.textContent = "Please enter a valid 11-digit phone number.";
+    return;
+  }
 
-message.style.display="block";
-message.textContent="Demo request received: "+network+" data for "+phone+". Live purchases are not yet enabled.";
+  message.style.display = "block";
+  message.textContent = "Submitting your order...";
+
+  const { error } = await supabaseClient
+    .from("orders")
+    .insert([{
+      network: network,
+      phone: phone,
+      plan: plan.options[plan.selectedIndex].text,
+      amount: Number(plan.value),
+      status: "pending"
+    }]);
+
+  if (error) {
+    message.textContent = "Order failed: " + error.message;
+    return;
+  }
+
+  message.textContent = "Order received successfully!";
+  document.getElementById("dataForm").reset();
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://rtzsmlfbzaohecoaxtav.supabase.co";
