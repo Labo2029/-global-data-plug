@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account - GLOBAL DATA PLUG</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  padding: 25px;
+}
+.container {
+  max-width: 420px;
+  margin: 30px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+}
+h2 { text-align: center; color: #0756c9; }
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+button {
+  background: #0756c9;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  font-size: 16px;
+}
+a { color: #0756c9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>GLOBAL DATA PLUG</h2>
+<h3>Create Your Account</h3>
+
+<form id="signupForm">
+<input id="fullName" placeholder="Full Name" required>
+<input id="signupEmail" type="email" placeholder="Email Address" required>
+<input id="signupPhone" type="tel" placeholder="Phone Number" required>
+<input id="signupPassword" type="password" placeholder="Password" minlength="6" required>
+<button type="submit">Create Account</button>
+</form>
+
+<p>Already have an account? <a href="login.html">Login</a></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://rtzsmlfbzaohecoaxtav.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_aALYcqtkBOxligf84gZTrQ_1WZcxlkP";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fullName = document.getElementById("fullName").value;
+  const email = document.getElementById("signupEmail").value;
+  const phone = document.getElementById("signupPhone").value;
+  const password = document.getElementById("signupPassword").value;
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        phone: phone
+      }
+    }
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Account created successfully!");
+    window.location.href = "login.html";
+  }
+});
+</script>
+</body>
+</html>
