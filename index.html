@@ -151,32 +151,35 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
-  document.getElementById("signupForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  async function loadWallet() {
+  const { data: { session }, error: sessionError } =
+    await supabaseClient.auth.getSession();
 
-  const fullName = document.getElementById("fullName").value;
-  const email = document.getElementById("signupEmail").value;
-  const phone = document.getElementById("signupPhone").value;
-  const password = document.getElementById("signupPassword").value;
+  const balanceElement = document.getElementById("walletBalance");
 
-  const { data, error } = await supabaseClient.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        full_name: fullName,
-        phone: phone
-      }
-    }
-  });
+  if (sessionError || !session) {
+    balanceElement.textContent = "Login to view balance";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("wallets")
+    .select("balance")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
 
   if (error) {
-    alert(error.message);
-  } else {
-    alert("Account created successfully!");
-    document.getElementById("signupForm").reset();
+    balanceElement.textContent = "Unable to load balance";
+    return;
   }
-});
+
+  balanceElement.textContent =
+    "₦" + Number(data?.balance || 0).toLocaleString("en-NG", {
+      minimumFractionDigits: 2
+    });
+}
+
+loadWallet();
 </script>
 </body>
 </html>
