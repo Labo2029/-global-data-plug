@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - GLOBAL DATA PLUG</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  padding: 25px;
+}
+.container {
+  max-width: 420px;
+  margin: 30px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+}
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+button {
+  background: #0756c9;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>GLOBAL DATA PLUG</h2>
+<h3>Login to Your Account</h3>
+
+<form id="loginForm">
+<input id="email" type="email" placeholder="Email Address" required>
+<input id="password" type="password" placeholder="Password" required>
+<button type="submit">Login</button>
+</form>
+
+<p id="message"></p>
+<p>Don't have an account? <a href="signup.html">Create Account</a></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://rtzsmlfbzaohecoaxtav.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_aALYcqtkBOxligf84gZTrQ_1WZcxlkP";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
+
+  message.textContent = "Logging in...";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+  } else {
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+</body>
+</html>
